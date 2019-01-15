@@ -95,11 +95,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>com.mycila</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <version>2.10</version>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.7</version>
@@ -173,44 +168,6 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <header>${project.parent.relativePath}/MPL2-template.txt</header>
-                    <failIfMissing>true</failIfMissing>
-                    <aggregate>true</aggregate>
-                    <strictCheck>true</strictCheck>
-                    <properties>
-                        <organisation>${project.organization.name}</organisation>
-                        <email>${contact.email}</email>
-                        <url>${project.organization.url}</url>
-                    </properties>
-                    <excludes>
-                        <exclude>**/pom.xml</exclude>
-                        <exclude>**/*.sbt</exclude>
-                        <exclude>**/project/**</exclude>
-                        <exclude>**/csv-schema-grammar.ebnf</exclude>
-                        <exclude>**/README.md</exclude>
-                        <exclude>**/LICENSE</exclude>
-                        <exclude>**/*.csvs</exclude>
-                        <exclude>**/*.csv</exclude>
-                        <exclude>**/*.txt</exclude>
-                        <exclude>**/*.jp2</exclude>
-                    </excludes>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-headers</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -388,5 +345,28 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <repositories>
+        <repository>
+            <id>statflo-snapshot</id>
+            <url>https://statflo.mycloudrepo.io/repositories/statflo-snapshot</url>
+            <snapshots/>
+        </repository>
+        <repository>
+            <id>statflo-release</id>
+            <url>https://statflo.mycloudrepo.io/repositories/statflo-release</url>
+            <releases/>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>statflo-snapshot</id>
+            <name>Statflo snapshot repository</name>
+            <url>https://statflo.mycloudrepo.io/repositories/statflo-snapshot</url>
+        </snapshotRepository>
+        <repository>
+            <id>statflo-release</id>
+            <name>Statflo statflo-release repository</name>
+            <url>https://statflo.mycloudrepo.io/repositories/statflo-release</url>
+        </repository>
+    </distributionManagement>
 </project>
