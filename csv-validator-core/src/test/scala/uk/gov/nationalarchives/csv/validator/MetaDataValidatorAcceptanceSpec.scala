@@ -47,6 +47,7 @@ class MetaDataValidatorAcceptanceSpec extends Specification with TestResources {
   def parseE(reader: io.Reader): Schema = parseSchemaE(reader) fold (f => throw new IllegalArgumentException(f.toString()), s => s)
 
   "@separator global directive" should {
+
     "succeed for '$' separator" in {
       validate(TextFile(Path.fromString(base) / "separated1.dsv"), parse(base + "/separated1.csvs"), None).isSuccess mustEqual true
     }
@@ -71,6 +72,12 @@ class MetaDataValidatorAcceptanceSpec extends Specification with TestResources {
       "succeed for '\t' separator" in {
         validate(TextFile(Path.fromString(base) / "separated4.tsv"), parse(base + "/separated4-1.csvs"), None).isSuccess mustEqual true
       }
+    }
+  }
+
+  "An @quoteChar global directive" should {
+    "pass a rule case" in {
+      validate(TextFile(Path.fromString(base) / "quotesCharPass.csv"), parse(base + "/quoteChar.csvs"), None).isSuccess mustEqual true
     }
   }
 

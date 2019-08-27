@@ -84,21 +84,25 @@ trait MetaDataValidator {
   }
 
   def validateKnownRows(csv: JReader, schema: Schema, progress: Option[ProgressFor]): MetaDataValidation[Any] = {
+    val settings = new CsvParserSettings()
+    val format = settings.getFormat
 
     val separator: Char = schema.globalDirectives.collectFirst {
       case Separator(sep) =>
         sep
     }.getOrElse(CSV_RFC1480_SEPARATOR)
 
-    val quote: Option[Char] = schema.globalDirectives.collectFirst {
+    schema.globalDirectives.collectFirst {
       case q: Quoted =>
-        CSV_RFC1480_QUOTE_CHARACTER
+        format.setQuote(CSV_RFC1480_QUOTE_CHARACTER)
     }
 
-    val settings = new CsvParserSettings()
-    val format = settings.getFormat
+    schema.globalDirectives.collectFirst {
+      case QuoteChar(ch) =>
+        format.setQuote(ch)
+    }
+
     format.setDelimiter(separator)
-    quote.map(format.setQuote)
 
     /* Set RFC 1480 settings */
     settings.setIgnoreLeadingWhitespaces(false)
