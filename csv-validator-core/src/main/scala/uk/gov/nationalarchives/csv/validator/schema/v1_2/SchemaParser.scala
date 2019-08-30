@@ -9,7 +9,7 @@
 package uk.gov.nationalarchives.csv.validator.schema.v1_2
 
 import scala.language.reflectiveCalls
-import uk.gov.nationalarchives.csv.validator.schema.{Literal, ArgProvider, QuoteChar, GlobalDirective}
+import uk.gov.nationalarchives.csv.validator.schema.{Literal, ArgProvider, QuoteChar, QuoteEscapeChar, GlobalDirective}
 import uk.gov.nationalarchives.csv.validator.schema.v1_1.{SchemaParser => SchemaParser1_1}
 
 trait SchemaParser extends SchemaParser1_1 {
@@ -37,14 +37,27 @@ trait SchemaParser extends SchemaParser1_1 {
   }
 
   /**
+    * [60] QuoteEscapeChar ::=  CharacterLiteral
+    */
+  lazy val quoteEscapeChar: PackratParser[QuoteEscapeChar] = "QuoteEscapeChar" ::= (characterLiteral | quotedLiteral) ^^ {
+    QuoteEscapeChar(_)
+  }
+
+
+  /**
     * [61] QuoteCharDirective ::= DirectivePrefix "quote" SeparatorChar
     */
   lazy val quoteCharDirective: PackratParser[QuoteChar] = "QuoteCharDirective" ::= directivePrefix ~> "quoteChar" ~> quoteChar
 
   /**
+    * [61] QuoteCharDirective ::= DirectivePrefix "quote" SeparatorChar
+    */
+  lazy val quoteEscapeCharDirective: PackratParser[QuoteEscapeChar] = "QuoteEscapeCharDirective" ::= directivePrefix ~> "quoteEscapeChar" ~> quoteEscapeChar
+
+  /**
     * [4] GlobalDirectives	::=	SeparatorDirective? QuotedDirective? TotalColumnsDirective? PermitEmptyDirective? (NoHeaderDirective | IgnoreColumnNameCaseDirective)?   /* expr: unordered */
     */
-  override lazy val globalDirectives: PackratParser[List[GlobalDirective]] = "GlobalDirectives" ::= opt(mingle(List(separatorDirective, quotedDirective, quoteCharDirective, totalColumnsDirective, permitEmptyDirective, noHeaderDirective | ignoreColumnNameCaseDirective).map(positioned(_) <~ opt(eol))).withFailureMessage("Invalid global directive")) ^^ {
+  override lazy val globalDirectives: PackratParser[List[GlobalDirective]] = "GlobalDirectives" ::= opt(mingle(List(separatorDirective, quotedDirective, quoteCharDirective, quoteEscapeCharDirective, totalColumnsDirective, permitEmptyDirective, noHeaderDirective | ignoreColumnNameCaseDirective).map(positioned(_) <~ opt(eol))).withFailureMessage("Invalid global directive")) ^^ {
     _.getOrElse(List.empty)
   }
 

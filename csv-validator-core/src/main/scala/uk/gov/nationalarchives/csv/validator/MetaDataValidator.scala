@@ -102,6 +102,13 @@ trait MetaDataValidator {
         format.setQuote(ch)
     }
 
+    format.setQuoteEscape(CSV_RFC1480_QUOTE_ESCAPE_CHARACTER)
+
+    schema.globalDirectives.collectFirst {
+      case QuoteEscapeChar(ch) =>
+        format.setQuoteEscape(ch)
+    }
+
     format.setDelimiter(separator)
 
     /* Set RFC 1480 settings */
@@ -109,7 +116,6 @@ trait MetaDataValidator {
     settings.setIgnoreTrailingWhitespaces(false)
     settings.setLineSeparatorDetectionEnabled(true)
     // TODO(AR) should we be friendly and auto-detect line separator, or enforce RFC 1480?
-    format.setQuoteEscape(CSV_RFC1480_QUOTE_ESCAPE_CHARACTER)
     //format.setLineSeparator(CSV_RFC1480_LINE_SEPARATOR)  // CRLF
 
     //we need a better CSV Reader!

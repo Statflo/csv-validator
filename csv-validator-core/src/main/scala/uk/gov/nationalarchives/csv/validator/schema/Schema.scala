@@ -26,6 +26,8 @@ case class Quoted() extends GlobalDirective("quoted")
 
 case class QuoteChar(quoteChar: Char) extends GlobalDirective("quoteChar")
 
+case class QuoteEscapeChar(quoteEscapeChar: Char) extends GlobalDirective("quoteEscapeChar")
+
 case class TotalColumns(numberOfColumns: BigInt) extends GlobalDirective("totalColumns")
 
 case class PermitEmpty() extends GlobalDirective("permitEmpty")
