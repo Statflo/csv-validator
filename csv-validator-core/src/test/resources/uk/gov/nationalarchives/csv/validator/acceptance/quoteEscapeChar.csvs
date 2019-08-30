@@ -1,0 +1,5 @@
+version 1.2
+@totalColumns 2 @noHeader
+@quoteEscapeChar "\"
+Name:
+Value: any("value1","val\"ue2","val\"ue3")
