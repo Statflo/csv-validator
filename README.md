@@ -102,3 +102,10 @@ The CSV Validator implements almost all of `CSV Schema 1.1` language, current li
 * `PartialDateExpr` is not yet implemented (raises Schema check error).
 
 * At least `MD5`, `SHA-1`, `SHA-2`, `SHA-3`, and `SHA-256` checksum algorithms are supported. Probably many more as well as we defer to Java's `java.security.MessageDigest` class.
+
+
+# Building/Deploying (to cloudrepo)
+
+```
+mvn deploy
+```
