@@ -4,7 +4,7 @@
     <parent>
         <groupId>uk.gov.nationalarchives</groupId>
         <artifactId>csv-validator-parent</artifactId>
-        <version>1.2-RC3-SNAPSHOT</version>
+        <version>1.2-RC4-SNAPSHOT</version>
         <relativePath>../csv-validator-parent</relativePath>
     </parent>
 
@@ -160,5 +160,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <repositories>
+        <repository>
+            <id>scalaz-bintray</id>
+            <name>Scalaz Bintray Repo</name>
+            <url>http://dl.bintray.com/scalaz/releases</url>
+            <!-- needed for scalaz-stream -->
+        </repository>
+        <repository>
+            <id>gilt-group</id>
+            <name>Gilt Group Bintray Repo</name>
+            <url>http://dl.bintray.com/giltgroupe/maven</url>
+            <!-- needed for gfc-semver -->
+        </repository>
+    </repositories>
 </project>
