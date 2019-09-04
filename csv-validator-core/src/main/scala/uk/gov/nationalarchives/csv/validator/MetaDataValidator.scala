@@ -84,29 +84,32 @@ trait MetaDataValidator {
   }
 
   def validateKnownRows(csv: JReader, schema: Schema, progress: Option[ProgressFor]): MetaDataValidation[Any] = {
+    val settings = new CsvParserSettings()
+    val format = settings.getFormat
 
     val separator: Char = schema.globalDirectives.collectFirst {
       case Separator(sep) =>
         sep
-    }.getOrElse(CSV_RFC1480_SEPARATOR)
+    }.getOrElse(CSV_RFC4180_SEPARATOR)
 
-    val quote: Option[Char] = schema.globalDirectives.collectFirst {
-      case q: Quoted =>
-        CSV_RFC1480_QUOTE_CHARACTER
-    }
 
-    val settings = new CsvParserSettings()
-    val format = settings.getFormat
+    val quoteChar: Char = schema.globalDirectives.collectFirst {
+      case QuoteChar(q) =>
+        q
+    }.getOrElse(CSV_RFC4180_QUOTE_CHARACTER)
+
+
+    format.setQuote(quoteChar)
+    format.setQuoteEscape(quoteChar)
+
     format.setDelimiter(separator)
-    quote.map(format.setQuote)
 
-    /* Set RFC 1480 settings */
+    /* Set RFC 4180 settings */
     settings.setIgnoreLeadingWhitespaces(false)
     settings.setIgnoreTrailingWhitespaces(false)
     settings.setLineSeparatorDetectionEnabled(true)
-    // TODO(AR) should we be friendly and auto-detect line separator, or enforce RFC 1480?
-    format.setQuoteEscape(CSV_RFC1480_QUOTE_ESCAPE_CHARACTER)
-    //format.setLineSeparator(CSV_RFC1480_LINE_SEPARATOR)  // CRLF
+    // TODO(AR) should we be friendly and auto-detect line separator, or enforce RFC 4180?
+    //format.setLineSeparator(CSV_RFC4180_LINE_SEPARATOR)  // CRLF
 
     //we need a better CSV Reader!
     makeManagedResource {

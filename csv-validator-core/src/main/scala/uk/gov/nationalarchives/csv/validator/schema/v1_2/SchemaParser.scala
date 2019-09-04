@@ -9,7 +9,7 @@
 package uk.gov.nationalarchives.csv.validator.schema.v1_2
 
 import scala.language.reflectiveCalls
-import uk.gov.nationalarchives.csv.validator.schema.{Literal, ArgProvider}
+import uk.gov.nationalarchives.csv.validator.schema.{Literal, ArgProvider, QuoteChar, GlobalDirective}
 import uk.gov.nationalarchives.csv.validator.schema.v1_1.{SchemaParser => SchemaParser1_1}
 
 trait SchemaParser extends SchemaParser1_1 {
@@ -23,6 +23,29 @@ trait SchemaParser extends SchemaParser1_1 {
 
   lazy val urlDecode: PackratParser[ArgProvider] = "UriDecode" ::= "uriDecode(" ~> stringProvider ~ opt("," ~> stringProvider)  <~ ")" ^^ {
     case value ~ charset => UriDecode(value, charset)
+  }
+
+  lazy val quotedLiteral: Parser[Char] = "QuoteLiteral" ::= "\"" ~> """[^"]*""".r <~ "\""  ^^  {
+    _.head
+  }
+
+  /**
+    * [60] QuoteChar ::=  CharacterLiteral
+    */
+  lazy val quoteChar: PackratParser[QuoteChar] = "QuoteChar" ::= (characterLiteral | quotedLiteral) ^^ {
+    QuoteChar(_)
+  }
+
+  /**
+    * [61] QuoteCharDirective ::= DirectivePrefix "quote" SeparatorChar
+    */
+  lazy val quoteCharDirective: PackratParser[QuoteChar] = "QuoteCharDirective" ::= directivePrefix ~> "quoteChar" ~> quoteChar
+
+  /**
+    * [4] GlobalDirectives	::=	SeparatorDirective? QuotedDirective? TotalColumnsDirective? PermitEmptyDirective? (NoHeaderDirective | IgnoreColumnNameCaseDirective)?   /* expr: unordered */
+    */
+  override lazy val globalDirectives: PackratParser[List[GlobalDirective]] = "GlobalDirectives" ::= opt(mingle(List(separatorDirective, quotedDirective, quoteCharDirective, totalColumnsDirective, permitEmptyDirective, noHeaderDirective | ignoreColumnNameCaseDirective).map(positioned(_) <~ opt(eol))).withFailureMessage("Invalid global directive")) ^^ {
+    _.getOrElse(List.empty)
   }
 
 }

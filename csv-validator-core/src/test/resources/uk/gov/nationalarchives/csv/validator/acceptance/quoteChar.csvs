@@ -1,0 +1,5 @@
+version 1.2
+@totalColumns 2 @noHeader
+@quoteChar "'"
+Name:
+Value: any("value1","value2","value3")
